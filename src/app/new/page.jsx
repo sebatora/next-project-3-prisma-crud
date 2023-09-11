@@ -42,6 +42,15 @@ function NewTask({ params }) {
     router.push("/");
   };
 
+  const onDelete = async () => {
+    const res = await fetch(`http://localhost:3000/api/tasks/${params.id}`, {
+      method: "DELETE",
+    });
+
+    router.refresh();
+    router.push("/");
+  };
+
   return (
     <div className="h-screen flex justify-center items-center">
       <form className="bg-slate-800 p-10 w-1/" onSubmit={onSubmit}>
@@ -67,10 +76,20 @@ function NewTask({ params }) {
           onChange={(event) => setDescription(event.target.value)}
           value={description}
         ></textarea>
+        <div className="flex justify-between">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            {params.id ? "Update" : "Create"}
+          </button>
 
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          Create
-        </button>
+          {params.id && (
+            <button
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              onClick={onDelete}
+            >
+              Delete
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );

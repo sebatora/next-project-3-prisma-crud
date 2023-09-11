@@ -1,4 +1,3 @@
-import React from 'react'
-import NewTask from '@/app/new/page'
+import NewTask from "@/app/new/page";
 
-export default NewTask
+export default NewTask;
