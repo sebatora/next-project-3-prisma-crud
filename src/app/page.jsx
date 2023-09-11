@@ -1,12 +1,23 @@
-import React from 'react'
+import TaskCard from "@/components/TaskCard";
+import React from "react";
 
-function HomePage() {
-  return (
-    <div>
-      Tareas
-    </div>
-  )
+async function fetchTasks() {
+  const res = await fetch("http://localhost:3000/api/tasks");
+  return await res.json();
 }
 
-export default HomePage
+async function HomePage() {
+  const tasks = await fetchTasks();
 
+  return (
+    <section className="container mx-auto">
+      <div className="grid grid-cols-3 gap-3">
+        {tasks.map((task) => (
+          <TaskCard key={task.id} task={task} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export default HomePage;

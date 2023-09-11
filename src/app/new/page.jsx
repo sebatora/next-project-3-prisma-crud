@@ -1,23 +1,45 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-function NewPage() {
+function NewTask({ params }) {
+  const router = useRouter();
 
-  const router = useRouter()
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    if (params.id) {
+      fetch(`http://localhost:3000/api/tasks/${params.id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setTitle(data.title);
+          setDescription(data.description);
+        });
+    }
+  }, []);
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    const title = event.target.title.value;
-    const description = event.target.description.value;
 
-    const res = await fetch("api/tasks", {
-      method: "POST",
-      body: JSON.stringify({ title, description }),
-      headers: { "Content-Type": "application/json" },
-    });
-    const data = await res.json()
-    router.push("/")
+    if (params.id) {
+      const res = await fetch(`http://localhost:3000/api/tasks/${params.id}`, {
+        method: "PUT",
+        body: JSON.stringify({ title, description }),
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      console.log(data);
+    } else {
+      const res = await fetch("api/tasks", {
+        method: "POST",
+        body: JSON.stringify({ title, description }),
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+    }
+    router.refresh();
+    router.push("/");
   };
 
   return (
@@ -31,6 +53,8 @@ function NewPage() {
           className="border border-gray-400 p-2 mb-4 w-full text-black"
           id="title"
           placeholder="Title"
+          onChange={(event) => setTitle(event.target.value)}
+          value={title}
         />
         <label htmlFor="description" className="font-bold text-sm">
           Task Description
@@ -40,6 +64,8 @@ function NewPage() {
           className="border border-gray-400 p-2 mb-4 w-full text-black"
           id="description"
           placeholder="Description"
+          onChange={(event) => setDescription(event.target.value)}
+          value={description}
         ></textarea>
 
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -50,4 +76,4 @@ function NewPage() {
   );
 }
 
-export default NewPage;
+export default NewTask;
