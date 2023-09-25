@@ -2,7 +2,9 @@ import TaskCard from "@/components/TaskCard";
 import React from "react";
 
 async function fetchTasks() {
-  const res = await fetch("http://localhost:3000/api/tasks");
+  const res = await fetch("http://localhost:3000/api/tasks", {
+    cache: "no-cache"
+  });
   return await res.json();
 }
 
